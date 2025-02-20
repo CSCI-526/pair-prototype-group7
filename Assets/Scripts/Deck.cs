@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Deck : MonoBehaviour
 {
-    public class CardData
+    /*public class CardData
     {
         //this class is just for storing values which we'll use to 
         //instantiate multiple cards from the card prefab
@@ -19,7 +19,7 @@ public class Deck : MonoBehaviour
             this.texture = texture;
         }
 
-    }
+    }*/
 
     public GameObject cardPrefab;
 
