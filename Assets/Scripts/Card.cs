@@ -30,16 +30,18 @@ public class Card : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Initialize(CardValue.One, CardSuit.Hearts);
+        //Initialize(CardValue.One, CardSuit.Hearts, this.texture);
     }
 
-    public void Initialize(CardValue cV, CardSuit cS)
+    public void Initialize(CardValue cV, CardSuit cS, Texture2D tex)
     {
         this.cardValue = cV;
         this.cardSuit = cS;
+        this.texture = tex;
 
         if (spriteRenderer != null && texture != null)
         {
+            Debug.Log("Creating sprite");
             spriteRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height)
                 , new Vector2(0.5f, 0.5f));
         }

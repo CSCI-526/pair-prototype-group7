@@ -34,6 +34,19 @@ public class Deck : MonoBehaviour
         //PrintDeck();
         ShuffleDeck();
         //PrintDeck();
+
+
+        /*This is to test dealing a card and instantiating it*/
+        Debug.Log(deck.Count);
+        CardData cardData = DealCard();
+        Debug.Log(deck.Count);
+
+        //This card spawning logic might need to be handled elsewhere
+        GameObject newCard = Instantiate(cardPrefab);
+        newCard.GetComponent<Card>().Initialize(cardData.cardValue,
+            cardData.cardSuit, cardData.texture);
+        //Card should be dealt at 0,0,0
+        //This is just to show we can instantiate cards once we have the cardData
     }
 
     // Update is called once per frame
@@ -81,6 +94,33 @@ public class Deck : MonoBehaviour
         }
     }
 
+    //Deal a card
+    //Take the first card in the deck and remove it from the deck
+    //Remove it from the deck because it could get banked and may not return
+    //Return the card data to the caller
+    public CardData DealCard()
+    {
+        if(deck.Count == 0)
+        {
+            //Not sure on behavior here
+            //If the deck is empty but there is still a river to be created (in the case of every player banking a lot)
+            //Not sure if we want to just have an empty river
+            Debug.Log("Deck is empty!");
+            return null;
+        }
+        CardData cardData = deck[deck.Count - 1];
+        deck.RemoveAt(deck.Count - 1);
+
+        return cardData;
+    }
+
+    //Return a card to the deck
+    //Used for cleaning up the cards after a round and returning
+    //the river and player cards (not banked) to the deck
+    public void ReturnCardToDeck(CardData cardData)
+    {
+        deck.Add(cardData);
+    }
 
     //Using the name of the texture, generate a CardData object
     //Filename has to be in the format "1_spades.png" otherwise this will break
