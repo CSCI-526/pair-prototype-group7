@@ -17,4 +17,9 @@ public class CardData
         this.texture = texture;
     }
 
+    public string getCardString()
+    {
+        return cardValue + " of " + cardSuit;
+    }
+
 }

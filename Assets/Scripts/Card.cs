@@ -26,6 +26,9 @@ public class Card : MonoBehaviour
     public CardSuit cardSuit;
     public SpriteRenderer spriteRenderer;
     public Texture2D texture;
+    public GameplayManager gm;
+
+    public bool bankable = true;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +41,8 @@ public class Card : MonoBehaviour
         this.cardValue = cV;
         this.cardSuit = cS;
         this.texture = tex;
+
+        gm = GameObject.FindGameObjectWithTag("GameplayManager").GetComponent<GameplayManager>();
 
         if (spriteRenderer != null && texture != null)
         {
@@ -61,9 +66,19 @@ public class Card : MonoBehaviour
         spriteRenderer.transform.localScale = new Vector3(finalScale, finalScale, 1f);
     }
 
-    // Update is called once per frame
-    void Update()
+    public CardData GetCardData()
     {
-        
+        return new CardData(cardValue, cardSuit, texture);
+    }
+
+    //when clicked, pass to gameplay manager to find it in the river or hand and bank it
+    //when clicked, a card should be banked
+    private void OnMouseDown()
+    {
+        Debug.Log("Clicked!");
+        if (bankable)
+        {
+            gm.LocateAndBank(GetCardData());
+        }
     }
 }

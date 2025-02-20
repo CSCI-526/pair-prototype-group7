@@ -30,21 +30,21 @@ public class Deck : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitializeDeck();
+        /*InitializeDeck();
         //PrintDeck();
         ShuffleDeck();
-        //PrintDeck();
+        //PrintDeck();*/
 
 
         /*This is to test dealing a card and instantiating it*/
-        Debug.Log(deck.Count);
+        /*Debug.Log(deck.Count);
         CardData cardData = DealCard();
-        Debug.Log(deck.Count);
+        Debug.Log(deck.Count);*/
 
         //This card spawning logic might need to be handled elsewhere
-        GameObject newCard = Instantiate(cardPrefab);
+        /*GameObject newCard = Instantiate(cardPrefab);
         newCard.GetComponent<Card>().Initialize(cardData.cardValue,
-            cardData.cardSuit, cardData.texture);
+            cardData.cardSuit, cardData.texture);*/
         //Card should be dealt at 0,0,0
         //This is just to show we can instantiate cards once we have the cardData
     }
@@ -56,7 +56,7 @@ public class Deck : MonoBehaviour
     }
 
     //Populate the deck of cards represented as a stack, needs shuffling
-    void InitializeDeck()
+    public void InitializeDeck()
     {
         //For right now deck consists of 5 suits, cards numbered 1-5
         for(int i = 0; i < cardTextures.Length; i++)
@@ -69,7 +69,7 @@ public class Deck : MonoBehaviour
     }
 
     //Shuffle the deck using Fischer-Yates
-    void ShuffleDeck()
+    public void ShuffleDeck()
     {
         System.Random rand = new System.Random();
         int i = deck.Count - 1;
