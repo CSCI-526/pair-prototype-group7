@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.XR;
 
 public class GamePlaying : MonoBehaviour
 {
@@ -36,7 +38,6 @@ public class GamePlaying : MonoBehaviour
     public int curr_player;
     public int curr_event;
     public int curr_dealer;
-    public Deck deck;
     public List<Player> players = new List<Player>();
     public TMP_InputField bet_input;
     public bool betting;
@@ -45,7 +46,10 @@ public class GamePlaying : MonoBehaviour
     public TMP_Text text_money;
     public TMP_Text text_name;
     public TMP_Text text_curent_event;
-    
+
+    //objects that carry over from turn to turn
+    public Deck deck;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -80,7 +84,7 @@ public class GamePlaying : MonoBehaviour
         curr_event = 0;
         ChangePhase(curr_event);
 
-
+        //initialize the game components
     }
 
     void DoBeforeStart(){
