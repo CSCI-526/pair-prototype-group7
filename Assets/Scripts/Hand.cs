@@ -16,7 +16,7 @@ public class Hand : MonoBehaviour
 
     public void showHand()
     {
-        for(int i = 0; i < hand.Count(); i++)
+        for(int i = 0; i < handData.Count; i++)
         {
             
         }

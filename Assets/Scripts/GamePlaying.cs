@@ -40,6 +40,11 @@ public class GamePlaying : MonoBehaviour
     public List<Player> players = new List<Player>();
     public TMP_InputField bet_input;
     public bool betting;
+
+    //Displays
+    public TMP_Text text_money;
+    public TMP_Text text_name;
+    public TMP_Text text_curent_event;
     
     // Start is called before the first frame update
     void Start()
@@ -206,6 +211,15 @@ public class GamePlaying : MonoBehaviour
             
         }
         */
+    }
+
+    void Changeplayer(){
+        curr_player = (curr_player + 1) % player_num;
+
+        Player p = players[curr_player];
+        text_money.text = "Money: " + p.player_money;
+        text_name.text = "Player" + p.player_no;
+        //text_curent_event.text = curr_event;
     }
 
     void ChangePhase(int curr_event){
