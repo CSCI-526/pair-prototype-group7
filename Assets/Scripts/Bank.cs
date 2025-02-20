@@ -1,16 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Bank : MonoBehaviour
 {
-    //261, -134
     //card data for all cards in bank
     public List<CardData> bankData = new List<CardData>();
 
     //text listing all of the cards
-    public Text bankText;
+    public TMP_Text bankText;
 
     public void AddToBank(CardData cd)
     {

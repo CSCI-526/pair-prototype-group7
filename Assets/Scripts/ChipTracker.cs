@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ChipTracker : MonoBehaviour
 {
-    public Text t;
+    public TMP_Text t;
     public bool isPot;
 
     public void updateValue(int chips)
