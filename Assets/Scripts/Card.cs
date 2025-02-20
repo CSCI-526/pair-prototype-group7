@@ -46,20 +46,16 @@ public class Card : MonoBehaviour
 
         spriteRenderer.sortingOrder = 10; 
 
-        // Get the actual size of the sprite
         float spriteWidth = spriteRenderer.sprite.bounds.size.x;
         float spriteHeight = spriteRenderer.sprite.bounds.size.y;
 
-        // Get the size of the GameObject (Card) itself
         float cardWidth = transform.localScale.x;
         float cardHeight = transform.localScale.y;
 
-        // Calculate the scale needed to fit the sprite inside the card
         float scaleX = cardWidth / spriteWidth;
         float scaleY = cardHeight / spriteHeight;
-        float finalScale = Mathf.Min(scaleX, scaleY); // Keep aspect ratio
-
-        // Apply the scale
+        float finalScale = Mathf.Min(scaleX, scaleY);
+ 
         spriteRenderer.transform.localScale = new Vector3(finalScale, finalScale, 1f);
     }
 
