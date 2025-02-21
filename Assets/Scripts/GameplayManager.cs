@@ -252,6 +252,15 @@ public class GameplayManager : MonoBehaviour
         int.TryParse(bet_input.text, out card_no);
         WithdrawFromBankToHand(activePlayer, card_no);
 
+        if(activePlayer.playerNum == dealer){
+            next_button.gameObject.SetActive(true);
+            next_player_button.gameObject.SetActive(false);
+        }
+        else{
+            next_button.gameObject.SetActive(false);
+            next_player_button.gameObject.SetActive(true);
+        }
+
     }
 
     public void WithdrawFromBankToHand(GamePlayer player,int num)
@@ -416,9 +425,11 @@ public class GameplayManager : MonoBehaviour
         else if(curr_event == (int)GamePhase.Deal3Hands_PreFlopBetting){
             //DoDeal3Hands_PreFlopBetting();
             BankingRound();
+            
         }
         else if(curr_event == (int)GamePhase.Flop3Cards_HandBanking){
-            DoFlop3Cards_HandBanking();
+            //DoFlop3Cards_HandBanking();
+            Withdrawal();
         }
         else if(curr_event == (int)GamePhase.FlopBetting){
             DoFlopBetting();
