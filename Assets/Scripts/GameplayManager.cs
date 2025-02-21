@@ -261,6 +261,8 @@ public class GameplayManager : MonoBehaviour
         }
 
         //At this point all bets have been submitted move on to the next phase
+        //Kill the listener
+        bet_input.onEndEdit.RemoveListener(OnSubmitBet);
     }
 
     /*
