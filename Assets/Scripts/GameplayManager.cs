@@ -525,11 +525,17 @@ public class GameplayManager : MonoBehaviour
         else{
             dealer++;
         }
+        //give pot to the winner
+        potTotal = 0;
+        pot.updateValue(potTotal);
+
+        //initialize deck and put hands to deck
+        
         SetActivePlayer(dealer-1);
         bet_input.gameObject.SetActive(true);
         withdraw_input.gameObject.SetActive(false);
-
         //ChangePhase(curr_phase);
+
     }
 
     void OnButtonClick(int buttonID)
