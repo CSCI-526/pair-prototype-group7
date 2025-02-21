@@ -1811,7 +1811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &935634783
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2181,7 +2181,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1092377485
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2949,6 +2949,9 @@ MonoBehaviour:
   money: {fileID: 783357627}
   potTotal: 0
   river: {fileID: 529295533}
+  dealer: 0
+  bet_amount: 0
+  curr_phase: 0
   p1Hand: {fileID: 1980331019}
   p1Chips: 100
   p1Bank: {fileID: 1266363851}
@@ -2961,6 +2964,8 @@ MonoBehaviour:
   currEventText: {fileID: 147137411}
   currPlayerText: {fileID: 1169480623}
   potText: {fileID: 1876675614}
+  bet_input: {fileID: 865787220}
+  next_button: {fileID: 935738500}
 --- !u!1 &1452801732
 GameObject:
   m_ObjectHideFlags: 0
