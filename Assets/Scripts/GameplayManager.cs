@@ -51,6 +51,8 @@ public class GameplayManager : MonoBehaviour
 
     //UI elements
     public TMP_Text currEventText;
+    public TMP_Text currPlayerText;
+    public TMP_Text potText;
 
     //initialize everything needed at the top of the game
     void Start()
@@ -188,5 +190,6 @@ public class GameplayManager : MonoBehaviour
         activePlayer = playerList[playerNum];
         activePlayer.hand.ShowHand();
         money.updateValue(activePlayer.chipTotal);
+        currPlayerText.text = "Player " + activePlayer.playerNum;
     }
 }

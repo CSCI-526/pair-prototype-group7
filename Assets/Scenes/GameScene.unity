@@ -2959,6 +2959,8 @@ MonoBehaviour:
   p3Chips: 100
   p3Bank: {fileID: 266640588}
   currEventText: {fileID: 147137411}
+  currPlayerText: {fileID: 1169480623}
+  potText: {fileID: 1876675614}
 --- !u!1 &1452801732
 GameObject:
   m_ObjectHideFlags: 0
