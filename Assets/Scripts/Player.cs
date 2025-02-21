@@ -24,8 +24,11 @@ public class Player //: MonoBehaviour
         //Initialize(player_no);
     }
 
-    public void Initialize(int player_no){
-        
+    public void Initialize(int player_money, bool isDealer, List<CardData> hand, List<CardData> bank){
+        this.player_money = player_money;
+        this.dealer = isDealer;
+        this.hands = hand;
+        this.banks = bank;
     }
 
     public void Bet(int money_reduce){

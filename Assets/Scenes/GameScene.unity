@@ -1950,7 +1950,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.3433533, y: -64}
+  m_AnchoredPosition: {x: -186, y: -64}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &935738500
@@ -2950,14 +2950,15 @@ MonoBehaviour:
   potTotal: 0
   river: {fileID: 529295533}
   p1Hand: {fileID: 1980331019}
-  p1Chips: 0
+  p1Chips: 100
   p1Bank: {fileID: 1266363851}
   p2Hand: {fileID: 991241483}
-  p2Chips: 0
+  p2Chips: 100
   p2Bank: {fileID: 613597418}
   p3Hand: {fileID: 296670280}
-  p3Chips: 0
+  p3Chips: 100
   p3Bank: {fileID: 266640588}
+  currEventText: {fileID: 147137411}
 --- !u!1 &1452801732
 GameObject:
   m_ObjectHideFlags: 0
