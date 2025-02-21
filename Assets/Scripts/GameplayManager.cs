@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static System.Net.Mime.MediaTypeNames;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -80,6 +81,10 @@ public class GameplayManager : MonoBehaviour
     GamePlayer[] playerList = new GamePlayer[3];
     GamePlayer activePlayer;
 
+    //Betting
+    private bool betPlaced = false;
+    private int lastBet;
+
 
     //UI elements
     public TMP_Text currEventText;
@@ -103,8 +108,10 @@ public class GameplayManager : MonoBehaviour
         river.Flop(deck);
 
         HandleBettingRound();*/
+
         InitializePlayers();
-        InitializeGame();
+        StartBettingRound();
+        //InitializeGame();
         //HandleBettingRound();
     }
 
@@ -192,19 +199,68 @@ public class GameplayManager : MonoBehaviour
         //pot
         potText.text = "Pot: " + potTotal;
 
+
         curr_phase = 0;
         ChangePhase(curr_phase);
     }
 
+
+    void OnSubmitBet(string betAmount)
+    {
+        if (!string.IsNullOrEmpty(betAmount))
+        {
+            Debug.Log("User submitted: " + betAmount);
+            lastBet = int.Parse(betAmount);
+            betPlaced = true;
+            bet_input.text = "";
+        }
+    }
     
+    //Calls the coroutine
+    public void StartBettingRound()
+    {
+        currEventText.text = "Betting Round! Input bet and press enter!";
+        bet_input.onEndEdit.AddListener(OnSubmitBet);
+        StartCoroutine(HandleBettingRound());  
+    }
     //Handle the betting round
     //Take bets from each player, add it to the pot
     //This is where the pot gets updated
-    public void HandleBettingRound()
+    public IEnumerator HandleBettingRound()
     {
-        currEventText.text = "Betting Round!";
+       
+        for (int i = 0; i < playerList.Length; i++)
+        {
+            SetActivePlayer(i);
+            bet_input.text = "";
+            bet_input.ActivateInputField();
+            betPlaced = false;
 
-        //activePlayer.chipTotal;
+            bool validBet = false;
+
+            while (!validBet)
+            {
+                yield return new WaitUntil(() => betPlaced);
+
+                if(lastBet <= activePlayer.chipTotal)
+                {
+                    validBet = true;
+                } else
+                {
+                    Debug.Log("Invalid bet given! Bet is more than what player currently has.");
+                    bet_input.text = "";
+                    bet_input.ActivateInputField();
+                    betPlaced = false;
+                }
+            }
+
+            activePlayer.chipTotal -= lastBet;
+            money.updateValue(activePlayer.chipTotal);
+            potTotal += lastBet;
+            pot.updateValue(potTotal);
+        }
+
+        //At this point all bets have been submitted move on to the next phase
     }
 
     /*
@@ -283,8 +339,8 @@ public class GameplayManager : MonoBehaviour
             activePlayer.bank.bankText.gameObject.SetActive(false);
         }
         activePlayer = playerList[playerNum];
-        //activePlayer.hand.ShowHand();
-        //activePlayer.bank.bankText.gameObject.SetActive(true);
+        activePlayer.hand.ShowHand();
+        activePlayer.bank.bankText.gameObject.SetActive(true);
         money.updateValue(activePlayer.chipTotal);
         currPlayerText.text = "Player" + activePlayer.playerNum + "'s turn";
     }
@@ -425,7 +481,6 @@ public class GameplayManager : MonoBehaviour
         else if(curr_event == (int)GamePhase.Deal3Hands_PreFlopBetting){
             //DoDeal3Hands_PreFlopBetting();
             BankingRound();
-            
         }
         else if(curr_event == (int)GamePhase.Flop3Cards_HandBanking){
             //DoFlop3Cards_HandBanking();
