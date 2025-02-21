@@ -26,6 +26,8 @@ public class GameplayManager : MonoBehaviour
         }
     }
 
+
+
     public enum GamePhase{
         BeforeStart,//0//everyone can see the screen //show rules
         BlindBetting,//1//if player i is dealer, player i+1 and i+2 have to bet 10
@@ -58,7 +60,12 @@ public class GameplayManager : MonoBehaviour
     public int dealer;
     public int bet_amount;
     public int curr_phase;
+    int saved_phase;
     public int min_bet_amount;
+    public int card_price;
+    public int select_card;
+    public List<CardData> combinedData = new List<CardData>();
+    public GamePlayer winner;
 
     //int count;
 
@@ -78,8 +85,8 @@ public class GameplayManager : MonoBehaviour
     public Bank p3Bank;
 
     //Player list
-    GamePlayer[] playerList = new GamePlayer[3];
-    GamePlayer activePlayer;
+    public GamePlayer[] playerList = new GamePlayer[3];
+    public GamePlayer activePlayer;
 
     //Betting
     private bool betPlaced = false;
@@ -88,9 +95,11 @@ public class GameplayManager : MonoBehaviour
 
     //UI elements
     public TMP_Text currEventText;
+    //public TMP_Text extraText;
     public TMP_Text currPlayerText;
     public TMP_Text potText;
     public TMP_InputField bet_input;
+    public TMP_InputField withdraw_input;
     public Button next_button;
     public Button next_player_button;
 
@@ -110,8 +119,8 @@ public class GameplayManager : MonoBehaviour
         HandleBettingRound();*/
 
         InitializePlayers();
-        StartBettingRound();
-        //InitializeGame();
+        //StartBettingRound();
+        InitializeGame();
         //HandleBettingRound();
     }
 
@@ -154,9 +163,17 @@ public class GameplayManager : MonoBehaviour
     //search the river and the active player's hand for a card and bank it
     public void LocateAndBank(CardData cd)
     {
-        if (!river.LocateAndBank(cd))
+        /*if (!river.LocateAndBank(cd))
         {
             p1Hand.LocateAndBank(cd);
+        }*/
+        if (!activePlayer.hand.LocateAndBank(cd))
+        {
+            if(river.LocateAndBank(cd)){
+                activePlayer.chipTotal -= card_price;
+                money.updateValue(activePlayer.chipTotal);
+            }
+
         }
     }
 
@@ -195,6 +212,7 @@ public class GameplayManager : MonoBehaviour
         next_player_button.gameObject.SetActive(false);
         next_button.onClick.AddListener(() => OnButtonClick(1));
         next_player_button.onClick.AddListener(() => OnButtonClick(2));
+        //withdraw_button.onClick.AddListener(() => OnButtonClick(3));
 
         //pot
         potText.text = "Pot: " + potTotal;
@@ -202,6 +220,9 @@ public class GameplayManager : MonoBehaviour
 
         curr_phase = 0;
         ChangePhase(curr_phase);
+
+        bet_input.gameObject.SetActive(true);
+        withdraw_input.gameObject.SetActive(false);
     }
 
 
@@ -276,11 +297,12 @@ public class GameplayManager : MonoBehaviour
     //Each player takes one of three cards and banks it
     public void BankingRound()
     {
-        currEventText.text = "Bank a card!";
+        currEventText.text = "Bank a card from your hand by clicking the card!";
 
         if(activePlayer.playerNum == dealer){
             next_button.gameObject.SetActive(true);
             next_player_button.gameObject.SetActive(false);
+            curr_phase = 3;
         }
         else{
             next_button.gameObject.SetActive(false);
@@ -298,21 +320,29 @@ public class GameplayManager : MonoBehaviour
     public void RiverBankingRound()
     {
         currEventText.text = "Bank a river card!";
+
+        if(activePlayer.playerNum == dealer){
+            next_button.gameObject.SetActive(true);
+            next_player_button.gameObject.SetActive(false);
+            curr_phase = saved_phase;
+        }
+        else{
+            next_button.gameObject.SetActive(false);
+            next_player_button.gameObject.SetActive(true);
+        }
     }
 
     //Each player picks cards from their bank
     //and makes a hand
     public void Withdrawal()
     {
-        currEventText.text = "Take cards from your bank!";
-        //loop this for all players
-        int card_no;
-        int.TryParse(bet_input.text, out card_no);
-        WithdrawFromBankToHand(activePlayer, card_no);
+        currEventText.text = "Take cards from your bank! Input card number and press enter";
+        Startwithdraw();
 
         if(activePlayer.playerNum == dealer){
             next_button.gameObject.SetActive(true);
             next_player_button.gameObject.SetActive(false);
+            curr_phase = saved_phase;
         }
         else{
             next_button.gameObject.SetActive(false);
@@ -321,15 +351,52 @@ public class GameplayManager : MonoBehaviour
 
     }
 
-    public void WithdrawFromBankToHand(GamePlayer player,int num)
+    void OnSubmitWithdraw(string card_no)
     {
-        CardData temp = player.bank.bankData[num];
-        player.hand.handData.Add(temp);
-        player.bank.bankData.RemoveAt(num);
-        player.bank.UpdateBankText();
-        player.hand.HideHand();
-        player.hand.ShowHand();
+        if (!string.IsNullOrEmpty(card_no))
+        {
+            Debug.Log("withdraw: " + card_no);
+            select_card = int.Parse(card_no);
+            withdraw_input.text = "";
+            WithdrawFromBankToHand(select_card);
+        }
     }
+
+    public void Startwithdraw()
+    {
+        currEventText.text = "Withdraw the hand you want to use in this round!";
+        bet_input.gameObject.SetActive(false);
+        withdraw_input.gameObject.SetActive(true);
+    }
+
+    public void WithdrawFromBankToHand(int num)
+    {
+        Debug.Log("move: " + num);
+        CardData temp = activePlayer.bank.bankData[num-1];
+        activePlayer.hand.handData.Add(temp);
+        activePlayer.bank.bankData.RemoveAt(num-1);
+        activePlayer.bank.UpdateBankText();
+        activePlayer.hand.HideHand();
+        activePlayer.hand.ShowHand();
+    }
+
+    public void showHands()
+    {
+        currEventText.text = "Show Down!";
+        activePlayer.hand.ShowHand();
+
+        if(activePlayer.playerNum == dealer){
+            next_button.gameObject.SetActive(true);
+            next_player_button.gameObject.SetActive(false);
+            curr_phase = saved_phase;
+        }
+        else{
+            next_button.gameObject.SetActive(false);
+            next_player_button.gameObject.SetActive(true);
+        }
+
+    }
+ 
 
     //Helper to switch to a different player
     //Show that player's hand, bank, and current chips
@@ -341,8 +408,9 @@ public class GameplayManager : MonoBehaviour
             activePlayer.bank.bankText.gameObject.SetActive(false);
         }
         activePlayer = playerList[playerNum];
-        activePlayer.hand.ShowHand();
-        activePlayer.bank.bankText.gameObject.SetActive(true);
+        //activePlayer.hand.ShowHand();
+        //activePlayer.bank.bankText.gameObject.SetActive(true);
+        activePlayer.bank.UpdateBankText();
         money.updateValue(activePlayer.chipTotal);
         currPlayerText.text = "Player" + activePlayer.playerNum + "'s turn";
     }
@@ -378,62 +446,90 @@ public class GameplayManager : MonoBehaviour
 
     public void DoDeal3Hands_PreFlopBetting(){
         currEventText.text = "Press S to see your hands. Press H to hide hands.";
-
-        //PreFlopBetting
-        //betting = true;
-        //Betting();
-        
-        
-        next_button.gameObject.SetActive(true);
+        SetActivePlayer(1);
+        StartBettingRound();
     }
 
     void DoFlop3Cards_HandBanking(){
-        next_button.gameObject.SetActive(true);
+        
+    }
+
+    void DoFlop3Cards(){
+        currEventText.text = "Bank a card from your hand by clicking the card!";
+        DealFlop();
+        SetActivePlayer(1);
+        saved_phase = curr_phase;
+        curr_phase = 12;
     }
 
     void DoFlopBetting(){
-        //curr_player = curr_dealer+1;
-        //Betting();
+        StartBettingRound();
         next_button.gameObject.SetActive(true);
     }
 
     void DoFlopBanking(){
-        next_button.gameObject.SetActive(true);
+        currEventText.text = "Bank a river card!";
+        card_price = 15;
+        SetActivePlayer(1);
+        saved_phase = curr_phase;
+        curr_phase = 14;
     }
 
     void DoTurnBetting(){
-        //curr_player = curr_dealer+1;
-        //Betting();
-        next_button.gameObject.SetActive(true);
+        river.addToRiver(deck);
+        StartBettingRound();
     }
 
     void DoTurnBanking(){
-        next_button.gameObject.SetActive(true);
+        currEventText.text = "Bank a river card!";
+        card_price = 20;
+        SetActivePlayer(1);
+        saved_phase = curr_phase;
+        curr_phase = 14;
     }
 
     void DoRiverBetting(){
-        //curr_player = curr_dealer+1;
-        //Betting();
-        next_button.gameObject.SetActive(true);
+        river.addToRiver(deck);
+        StartBettingRound();
     }
 
     void DoRiverBanking(){
-        next_button.gameObject.SetActive(true);
+        currEventText.text = "Bank a river card!";
+        card_price = 25;
+        SetActivePlayer(1);
+        saved_phase = curr_phase;
+        curr_phase = 14;
     }
 
     void DoWithdrawal(){
-        next_button.gameObject.SetActive(true);
+        currEventText.text = "Withdraw the hand you want to use in this round!";
+        withdraw_input.onEndEdit.AddListener(OnSubmitWithdraw);
+        Startwithdraw();
+        saved_phase = curr_phase;
+        curr_phase = 15;
     }
 
     void DoShowdown(){
-        next_button.gameObject.SetActive(true);
+        currEventText.text = "Show Down";
+        activePlayer.hand.ShowHand();
+        saved_phase = curr_phase;
+        curr_phase = 16;
     }
 
     void DoBeforeNextround(){
-        next_button.gameObject.SetActive(true);
-        
-        curr_phase = 0;
-        ChangePhase(curr_phase);
+        currEventText.text = "Start Next Round!";
+        curr_phase = -1;
+        if (dealer == 3){
+            dealer = 1;
+        }
+        else{
+            dealer++;
+        }
+        SetActivePlayer(dealer-1);
+        bet_input.gameObject.SetActive(true);
+        withdraw_input.gameObject.SetActive(false);
+
+        //ChangePhase(curr_phase);
     }
 
     void OnButtonClick(int buttonID)
@@ -481,12 +577,10 @@ public class GameplayManager : MonoBehaviour
             DoBlindBetting();
         }
         else if(curr_event == (int)GamePhase.Deal3Hands_PreFlopBetting){
-            //DoDeal3Hands_PreFlopBetting();
-            BankingRound();
+            DoDeal3Hands_PreFlopBetting();
         }
         else if(curr_event == (int)GamePhase.Flop3Cards_HandBanking){
-            //DoFlop3Cards_HandBanking();
-            Withdrawal();
+            DoFlop3Cards();
         }
         else if(curr_event == (int)GamePhase.FlopBetting){
             DoFlopBetting();
@@ -506,14 +600,30 @@ public class GameplayManager : MonoBehaviour
         else if(curr_event == (int)GamePhase.RiverBanking){
             DoRiverBanking();
         }
-        else if(curr_event == (int)GamePhase.Withdrawal){
+        else if(curr_event == (int)GamePhase.Withdrawal){//10
             DoWithdrawal();
         }
-        else if(curr_event == (int)GamePhase.Showdown){
+        else if(curr_event == (int)GamePhase.Showdown){//11
             DoShowdown();
         }
-        else if(curr_event == (int)GamePhase.BeforeNextround){
+        else if(curr_event == (int)GamePhase.BeforeNextround){//12
             DoBeforeNextround();
         }
+        else if(curr_event == 13){//banking
+            BankingRound();
+        }
+        //else if(curr_event == 14){//betting
+        //    HandleBettingRound();
+        //}
+        else if(curr_event == 15){//banking from river
+            RiverBankingRound();
+        }
+        else if(curr_event == 16){//withdraw
+            Withdrawal();
+        }
+        else if(curr_event == 17){//showdown
+            showHands();
+        }
+        
     }
 }

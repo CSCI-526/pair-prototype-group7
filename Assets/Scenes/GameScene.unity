@@ -1882,7 +1882,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -336.84796, y: -89}
+  m_AnchoredPosition: {x: -336.84796, y: -123}
   m_SizeDelta: {x: 136.3041, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &865787220
@@ -3224,6 +3224,8 @@ MonoBehaviour:
   bet_amount: 0
   curr_phase: 0
   min_bet_amount: 0
+  card_price: 0
+  select_card: 0
   p1Hand: {fileID: 1980331019}
   p1Chips: 100
   p1Bank: {fileID: 1266363851}
@@ -4062,7 +4064,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1786012629
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4614,7 +4616,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2122731872
 RectTransform:
   m_ObjectHideFlags: 0
